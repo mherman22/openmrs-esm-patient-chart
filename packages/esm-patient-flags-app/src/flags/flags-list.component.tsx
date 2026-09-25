@@ -40,6 +40,19 @@ const FlagsList: React.FC<FlagsListProps> = ({ patientUuid, filterByTags = [] })
   const handleClickEditFlags = useCallback(() => launchWorkspace2('patient-flags-workspace'), []);
 
   if (!isLoading && !error) {
+    // An unflagged patient otherwise renders nothing at all, which a clinician cannot tell apart
+    // from the flags failing to load or never having been configured.
+    if (filteredFlags.length === 0) {
+      return config.showNoRiskTag ? (
+        <div className={styles.container}>
+          <Tag className={styles.flagTag} type="green">
+            <span className={styles.flagIcon}>&#9989;</span>
+            {t('noRisk', 'No risk')}
+          </Tag>
+        </div>
+      ) : null;
+    }
+
     return (
       <div className={styles.container}>
         <ul className={styles.flagsList}>

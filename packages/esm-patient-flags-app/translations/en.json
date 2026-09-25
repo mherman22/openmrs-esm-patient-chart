@@ -17,6 +17,7 @@
   "matchesForSearchTerm_one": "{{count}} flag",
   "matchesForSearchTerm_other": "{{count}} flags",
   "noFlagsFound": "Sorry, no flags found matching your search",
+  "noRisk": "No risk",
   "retiredFirst": "Retired first",
   "saveAndClose": "Save & close",
   "saving": "Saving...",

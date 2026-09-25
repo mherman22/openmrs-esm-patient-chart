@@ -42,12 +42,19 @@ export interface PriorityConfig {
 
 export interface ConfigObject {
   allowFlagDeletion: boolean;
+  showNoRiskTag: boolean;
   flagActions: Array<FlagAction>;
   tagActions: Array<TagAction>;
   priorities: Array<PriorityConfig>;
 }
 
 export const configSchema = {
+  showNoRiskTag: {
+    _type: Type.Boolean,
+    _default: true,
+    _description:
+      'Whether to show a "no risk" tag when a patient has no active flags. Without it an unflagged patient renders nothing, which looks the same as flags failing to load or never having been configured.',
+  },
   allowFlagDeletion: {
     _type: Type.Boolean,
     _default: true,

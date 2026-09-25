@@ -30,6 +30,37 @@ describe('flags list', () => {
     vi.clearAllMocks();
   });
 
+  it('shows a no risk tag when the patient has no flags', () => {
+    mockUseConfig.mockReturnValue(getDefaultsFromConfigSchema(configSchema));
+    mockUsePatientFlags.mockReturnValue({
+      error: null,
+      flags: [],
+      isLoading: false,
+      isValidating: false,
+      mutate: vi.fn(),
+    });
+
+    render(<FlagsList patientUuid={mockPatient.id} />);
+
+    expect(screen.getByText(/no risk/i)).toBeInTheDocument();
+    expect(screen.queryByRole('listitem')).not.toBeInTheDocument();
+  });
+
+  it('shows nothing for a patient with no flags when the no risk tag is turned off', () => {
+    mockUseConfig.mockReturnValue({ ...getDefaultsFromConfigSchema(configSchema), showNoRiskTag: false });
+    mockUsePatientFlags.mockReturnValue({
+      error: null,
+      flags: [],
+      isLoading: false,
+      isValidating: false,
+      mutate: vi.fn(),
+    });
+
+    render(<FlagsList patientUuid={mockPatient.id} />);
+
+    expect(screen.queryByText(/no risk/i)).not.toBeInTheDocument();
+  });
+
   it('flags list displays flags and edit button', async () => {
     const user = userEvent.setup();
 
