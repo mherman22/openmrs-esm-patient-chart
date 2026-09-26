@@ -71,6 +71,14 @@ interface FlagProps {
   patientUuid: string;
 }
 
+/** The props a flag or tag action's workspace is launched with, so it knows which flag was clicked. */
+export interface FlagActionWorkspaceProps {
+  patientUuid: string;
+  patientFlagUuid: string;
+  flagUuid: string;
+  flagName: string;
+}
+
 const Flag: React.FC<FlagProps> = ({ flag, patientUuid }) => {
   const config = useConfig<ConfigObject>();
   const priorityName = flag.flagDefinition?.priority?.name?.toLowerCase() ?? '';
@@ -85,23 +93,28 @@ const Flag: React.FC<FlagProps> = ({ flag, patientUuid }) => {
     );
   }, [config.priorities, priorityName]);
 
-  const action = useMemo(() => {
-    const flagName = flag.flagDefinition?.display ?? flag.flag?.display;
+  const flagName = flag.flagDefinition?.display ?? flag.flag?.display;
 
+  const action = useMemo(() => {
     const action =
       config.flagActions.find((action) => action.flagName === flagName) ||
       config.tagActions.find((action) => flag.tags?.some((tag) => tag.display === action.tagName));
 
     return action;
-  }, [flag, config]);
+  }, [flag, flagName, config]);
 
   const handleClick = useCallback(() => {
     if (action.workspace) {
-      launchWorkspace2(action.workspace);
+      launchWorkspace2<FlagActionWorkspaceProps, object, object>(action.workspace, {
+        patientUuid,
+        patientFlagUuid: flag.uuid,
+        flagUuid: flag.flag?.uuid,
+        flagName,
+      });
     } else if (action.url) {
       navigate({ to: action.url, templateParams: { patientUuid } });
     }
-  }, [action, patientUuid]);
+  }, [action, flag, flagName, patientUuid]);
 
   const isRiskPriority = priorityConfig?.isRiskPriority ?? false;
   const flagText = isRiskPriority ? `🚩 ${flag.message}` : flag.message;

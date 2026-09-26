@@ -25,6 +25,12 @@ vi.mock('./hooks/usePatientFlags', async () => {
   };
 });
 
+// The props a flag or tag action's workspace is launched with, for the mock flag of this name.
+function workspacePropsFor(flagName: string) {
+  const flag = mockPatientFlags.find((f) => f.flag.display === flagName);
+  return { patientUuid: mockPatient.id, patientFlagUuid: flag.uuid, flagUuid: flag.flag.uuid, flagName };
+}
+
 describe('flags list', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -123,7 +129,7 @@ describe('flags list', () => {
 
     await user.click(clickableFlag);
 
-    expect(mockLaunchWorkspace).toHaveBeenCalledWith('test-workspace');
+    expect(mockLaunchWorkspace).toHaveBeenCalledWith('test-workspace', workspacePropsFor('Needs Follow Up'));
   });
 
   it('navigates to URL when flag with configured flagAction URL is clicked', async () => {
@@ -173,7 +179,7 @@ describe('flags list', () => {
     const clickableFlag = screen.getByRole('button', { name: /diagnosis for the patient is unknown/i });
     await user.click(clickableFlag);
 
-    expect(mockLaunchWorkspace).toHaveBeenCalledWith('clinical-workspace');
+    expect(mockLaunchWorkspace).toHaveBeenCalledWith('clinical-workspace', workspacePropsFor('Unknown Diagnosis'));
   });
 
   it('flagAction takes precedence over tagAction', async () => {
@@ -199,8 +205,8 @@ describe('flags list', () => {
     await user.click(clickableFlag);
 
     // flagAction should take precedence
-    expect(mockLaunchWorkspace).toHaveBeenCalledWith('flag-specific-workspace');
-    expect(mockLaunchWorkspace).not.toHaveBeenCalledWith('tag-workspace');
+    expect(mockLaunchWorkspace).toHaveBeenCalledWith('flag-specific-workspace', workspacePropsFor('Unknown Diagnosis'));
+    expect(mockLaunchWorkspace).not.toHaveBeenCalledWith('tag-workspace', expect.anything());
   });
 
   it('displays flag icon for flags with isRiskPriority set to true', () => {

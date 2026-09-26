@@ -72,7 +72,8 @@ export const configSchema = {
       },
       workspace: {
         _type: Type.String,
-        _description: 'Name of the workspace to launch when the flag is clicked.',
+        _description:
+          'Name of the workspace to launch when the flag is clicked. It is launched with the props patientUuid, patientFlagUuid, flagUuid and flagName of the clicked flag.',
         _default: null,
       },
     },
@@ -96,7 +97,8 @@ export const configSchema = {
       },
       workspace: {
         _type: Type.String,
-        _description: 'Name of the workspace to launch when the flag is clicked.',
+        _description:
+          'Name of the workspace to launch when the flag is clicked. It is launched with the props patientUuid, patientFlagUuid, flagUuid and flagName of the clicked flag.',
         _default: null,
       },
     },
